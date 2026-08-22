@@ -212,7 +212,8 @@
             <button type="submit" class="btn-submit">Predict FWI</button>
         </form>
 
-        {% if result is defined and result != null %}
+        <!-- FIX: Using 'is not none' avoids implicit boolean conversion on numpy arrays -->
+        {% if result is defined and result is not none %}
         <div class="result-card">
             <h2>THE FWI PREDICTION IS: <span>{{ result }}</span></h2>
         </div>
