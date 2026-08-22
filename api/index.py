@@ -2,15 +2,14 @@ import os
 import pickle
 from flask import Flask, request, jsonify, render_template
 
-# Point to current directory (Ml Project)
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Point BASE_DIR one level up from /api to the project root
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 template_dir = os.path.join(BASE_DIR, 'templates')
 
 app = Flask(__name__, template_folder=template_dir)
 application = app
 
-# Point directly to Models folder
 model_path = os.path.join(BASE_DIR, 'Models', 'ridge.pkl')
 scaler_path = os.path.join(BASE_DIR, 'Models', 'scaler.pkl')
 
@@ -42,4 +41,4 @@ def predict():
         return render_template('home.html')
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000)
