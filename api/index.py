@@ -6,8 +6,8 @@ API_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(API_DIR)
 
 template_dir = os.path.join(BASE_DIR, 'templates')
-model_path = os.path.join(BASE_DIR, 'Models', 'ridge.pkl')
-scaler_path = os.path.join(BASE_DIR, 'Models', 'scaler.pkl')
+model_path = os.path.join(BASE_DIR, 'models', 'ridge.pkl')
+scaler_path = os.path.join(BASE_DIR, 'models', 'scaler.pkl')
 
 app = Flask(__name__, template_folder=template_dir)
 
