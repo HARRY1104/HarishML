@@ -1,0 +1,10 @@
+Numpy
+Pandas
+matplotlib
+scikit-learn
+seaborn
+flask
+streamlit
+memory_profiler
+bs4
+statsmodels
