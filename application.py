@@ -1,3 +1,4 @@
+import os
 import pickle
 from flask import Flask,request, jsonify,render_template
 import numpy as np
@@ -7,8 +8,12 @@ from sklearn.preprocessing import StandardScaler
 application = Flask(__name__)
 app = application
 
-ridge_model = pickle.load(open('Models/ridge.pkl', 'rb'))
-scaler_model = pickle.load(open('Models/scaler.pkl', 'rb'))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(BASE_DIR, 'Models', 'ridge.pkl')
+scaler_path = os.path.join(BASE_DIR, 'Models', 'scaler.pkl')
+
+ridge_model = pickle.load(open(model_path, 'rb'))
+scaler_model = pickle.load(open(scaler_path, 'rb'))
 
 @app.route('/')
 def index():
