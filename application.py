@@ -5,7 +5,10 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
-application = Flask(__name__)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+template_dir = os.path.join(BASE_DIR, 'templates')
+
+application = Flask(__name__, template_folder=template_dir)
 app = application
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
