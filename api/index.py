@@ -2,17 +2,28 @@ import os
 import pickle
 from flask import Flask, request, jsonify, render_template
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# 1. Get the directory containing index.py (/api)
+API_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# 2. Get the root project directory (one level above /api)
+BASE_DIR = os.path.dirname(API_DIR)
+
+# 3. Explicitly construct absolute paths to templates, static, and models
 template_dir = os.path.join(BASE_DIR, 'templates')
-
-# Vercel looks specifically for 'app' in api/index.py
-app = Flask(__name__, template_folder=template_dir)
-
 model_path = os.path.join(BASE_DIR, 'Models', 'ridge.pkl')
 scaler_path = os.path.join(BASE_DIR, 'Models', 'scaler.pkl')
 
-ridge_model = pickle.load(open(model_path, 'rb'))
-scaler_model = pickle.load(open(scaler_path, 'rb'))
+app = Flask(__name__, template_folder=template_dir)
+
+# 4. Safely load model and scaler files
+ridge_model = None
+scaler_model = None
+
+if os.path.exists(model_path) and os.path.exists(scaler_path):
+    with open(model_path, 'rb') as f:
+        ridge_model = pickle.load(f)
+    with open(scaler_path, 'rb') as f:
+        scaler_model = pickle.load(f)
 
 @app.route('/')
 def index():
@@ -37,6 +48,3 @@ def predict():
         return render_template('home.html', result=prediction[0])
     else:
         return render_template('home.html')
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
