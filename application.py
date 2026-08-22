@@ -1,17 +1,16 @@
 import os
 import pickle
-from flask import Flask,request, jsonify,render_template
-import numpy as np
-import pandas as pd
-from sklearn.preprocessing import StandardScaler
+from flask import Flask, request, jsonify, render_template
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Point to current directory (Ml Project)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 template_dir = os.path.join(BASE_DIR, 'templates')
 
-application = Flask(__name__, template_folder=template_dir)
-app = application
+app = Flask(__name__, template_folder=template_dir)
+application = app
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Point directly to Models folder
 model_path = os.path.join(BASE_DIR, 'Models', 'ridge.pkl')
 scaler_path = os.path.join(BASE_DIR, 'Models', 'scaler.pkl')
 
@@ -35,14 +34,12 @@ def predict():
         Classes = float(request.form['Classes'])
         Region = float(request.form['Region'])
 
-        scaler_model.transform([[Temperature, RH, Ws, Rain, FFMC, DMC, ISI, Classes, Region]])
-        prediction = ridge_model.predict([[Temperature, RH, Ws, Rain, FFMC, DMC, ISI, Classes, Region]])
+        new_data = scaler_model.transform([[Temperature, RH, Ws, Rain, FFMC, DMC, ISI, Classes, Region]])
+        prediction = ridge_model.predict(new_data)
 
         return render_template('home.html', result=prediction[0])
-
     else:
         return render_template('home.html')
 
 if __name__ == "__main__":
-    app.run(debug=True)
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
