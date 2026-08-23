@@ -67,10 +67,13 @@ def load_models():
 load_models()
 
 @app.route('/')
+@app.route('/api/index')
 def index():
     return render_template('index.html')
 
 @app.route('/predict', methods=['GET', 'POST'])
+@app.route('/api/predict', methods=['GET', 'POST'])
+@app.route('/api/index/predict', methods=['GET', 'POST'])
 def predict():
     if request.method == 'POST':
         success, err = load_models()
