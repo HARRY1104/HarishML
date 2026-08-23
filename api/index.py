@@ -5,29 +5,44 @@ from flask import Flask, request, render_template
 API_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(API_DIR)
 
+# Locate templates directory across possible runtime directories
 template_dir = os.path.join(BASE_DIR, 'templates')
-model_path = os.path.join(BASE_DIR, 'models', 'ridge.pkl')
-scaler_path = os.path.join(BASE_DIR, 'models', 'scaler.pkl')
+if not os.path.exists(template_dir):
+    template_dir = os.path.join(API_DIR, 'templates')
+if not os.path.exists(template_dir):
+    template_dir = os.path.join(os.getcwd(), 'templates')
 
 app = Flask(__name__, template_folder=template_dir)
 
-# Initialize global holders
+# Helper function to find files across possible base paths in Vercel Serverless
+def find_file(relative_path):
+    candidates = [
+        os.path.join(BASE_DIR, relative_path),
+        os.path.join(API_DIR, relative_path),
+        os.path.join(os.getcwd(), relative_path),
+        os.path.join('/var/task', relative_path),
+    ]
+    for path in candidates:
+        if os.path.exists(path):
+            return path
+    return None
+
+model_path = find_file(os.path.join('models', 'ridge.pkl'))
+scaler_path = find_file(os.path.join('models', 'scaler.pkl'))
+
 ridge_model = None
 scaler_model = None
 
-# Safely attempt to load models and print exact errors to Vercel Logs
+# Safely attempt to load models and log detailed info
 try:
-    print(f"Checking BASE_DIR: {BASE_DIR}")
-    print(f"Looking for model at: {model_path}")
-    
-    if os.path.exists(model_path) and os.path.exists(scaler_path):
+    if model_path and scaler_path:
         with open(model_path, 'rb') as f:
             ridge_model = pickle.load(f)
         with open(scaler_path, 'rb') as f:
             scaler_model = pickle.load(f)
         print("Models loaded successfully!")
     else:
-        print(f"FILE NOT FOUND ERROR: Check folder/file casing. Model exists: {os.path.exists(model_path)}, Scaler exists: {os.path.exists(scaler_path)}")
+        print(f"FILE NOT FOUND ERROR: model_path={model_path}, scaler_path={scaler_path}")
 except Exception as e:
     print(f"CRITICAL PICKLE ERROR: {str(e)}")
 
